@@ -1,0 +1,164 @@
+"--------------------------------------------
+"visual_setting
+set number 
+set cursorline
+set expandtab
+"tab_setting
+set tabstop=4
+set shiftwidth=4
+set autoindent
+"input_setting
+"
+inoremap ( ()<ESC>i
+inoremap [ []<ESC>i
+inoremap {<Enter> {}<Left><Enter><ESC><S-o>
+"map
+"
+noremap f <C-f>
+noremap F <C-b>
+"--------------------------------------------
+"vmap_setting
+"
+vmap <S-c> :w !xsel -ib<CR><CR>
+"--------------------------------------------
+"neobundle
+
+set nocompatible
+filetype off
+if has('vim_starting')
+    " Required
+    set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
+
+" Required:
+call neobundle#begin(expand('~/.vim/bundle/'))
+
+" Let NeoBundle manage NeoBundle
+" Required:
+NeoBundleFetch 'Shougo/neobundle.vim'
+
+" My Bundles here:
+" Refer to |:NeoBundle-examples|.
+" Note: You don't set neobundle setting in .gvimrc!
+"
+"
+" Rust
+" vim-racer
+NeoBundle 'racer-rust/vim-racer'
+NeoBundle 'rust-lang/rust.vim'
+
+"html
+"emmet-vim
+NeoBundle 'mattn/emmet-vim'
+call neobundle#end()
+
+" Required:
+filetype plugin indent on
+
+" If there are uninstalled bundles found on startup,
+" this will conveniently prompt you to install them.
+NeoBundleCheck
+
+"-------------------------------------------
+"Jedi for python
+NeoBundleLazy "davidhalter/jedi-vim", {
+    \ "autoload": { "filetypes": [ "python", "python3", "djangohtml"] }}
+
+if ! empty(neobundle#get("jedi-vim"))
+    let g:jedi#auto_initialization = 1
+    let g:jedi#auto_vim_configuration = 1
+
+    nnoremap [jedi] <Nop>
+    xnoremap [jedi] <Nop>
+    nmap <Leader>j [jedi]
+    xmap <Leader>j [jedi]
+
+    let g:jedi#completions_command = "<C-j>"    " 補完キーの設定この場合はCtrl+Space
+    let g:jedi#goto_assignments_command = "<C-g>"   " 変数の宣言場所へジャンプ（Ctrl + g)
+    let g:jedi#goto_definitions_command = "<C-d>"   " クラス、関数定義にジャンプ（Gtrl + d）
+    let g:jedi#documentation_command = "<C-k>"      " Pydocを表示（Ctrl + k）
+    let g:jedi#rename_command = "[jedi]r"
+    let g:jedi#usages_command = "[jedi]n"
+    let g:jedi#popup_select_first = 0
+    let g:jedi#popup_on_dot = 0
+    let g:jedi#show_call_signatures = 0
+
+    autocmd FileType python setlocal completeopt-=preview
+
+    " for w/ neocomplete
+         if ! empty(neobundle#get("neocomplete.vim"))
+             autocmd FileType python setlocal omnifunc=jedi#completions
+             let g:jedi#completions_enabled = 0
+             let g:jedi#auto_vim_configuration = 0
+             let g:neocomplete#force_omni_input_patterns.python = '\%([^.\t]\.\|^\s*@\|^\s*from\s.\+import\|^\s*from\|^\s*import\)\w*'
+         endif
+     endif
+
+"----------------------------------
+"autopep8
+"reffered:http://ton-up.net/technote/2013/11/26/vim-python-style-check-and-fix/
+function! Preserve(command)
+    let search = @/
+    let cursor_position = getpos('.')
+    let window_position = getpos('.')
+    call setpos('.', cursor_position)
+    execute a:command
+    let @/ = search
+    call setpos('.', window_position)
+    normal! zt
+    call setpos('.', cursor_position)
+endfunction
+
+function! Autopep8()
+    call Preserve(':silent %!autopep8 -')
+endfunction
+autocmd FileType python nnoremap <S-f> :call Autopep8()<CR>
+
+
+"----------------------------------
+"Vundle
+set nocompatible
+filetype off
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+Plugin 'tpope/vim-fugitive'
+" plugin from http://vim-scripts.org/vim/scripts.html
+" Plugin 'L9'
+" Git plugin not hosted on GitHub
+Plugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+Plugin 'file:///home/gmarik/path/to/plugin'
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Install L9 and avoid a Naming conflict if you've already installed a
+" different version somewhere else.
+" Plugin 'ascenator/L9', {'name': 'newL9'}
+Plugin 'dag/vim2hs'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+"----------------------------------
