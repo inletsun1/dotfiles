@@ -1,0 +1,14 @@
+"--------------------------------------------
+"visual_setting
+set number 
+set cursorline
+set expandtab
+"tab_setting
+set tabstop=4
+set shiftwidth=4
+set autoindent
+"input_setting
+"
+inoremap ( ()<ESC>i
+inoremap [ []<ESC>i
+inoremap {<Enter> {}<Left><Enter><ESC><S-o>
